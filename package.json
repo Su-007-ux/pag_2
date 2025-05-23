@@ -1,0 +1,36 @@
+{
+  "name": "page",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+  "dev": "ts-node src/server.ts",
+  "build": "tsc", 
+  "start": "node dist/server.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "ejs": "^3.1.10",
+    "express": "^5.1.0",
+    "express-session": "^1.18.1",
+    "sqlite": "^5.1.1",
+    "sqlite3": "^5.1.7"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.2",
+    "@types/express-session": "^1.18.1",
+    "@types/node": "^22.15.3",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Su-007-ux/pag-2.git"
+  },
+  "keywords": [],
+  "bugs": {
+    "url": "https://github.com/Su-007-ux/pag-2/issues"
+  },
+  "homepage": "https://github.com/Su-007-ux/pag-2#readme",
+  "description": ""
+}
