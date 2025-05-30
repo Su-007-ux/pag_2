@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import ContactsModel from '../models/ContactsModel';
 import axios from 'axios';
 
-async function verifyCaptcha(token: string, ip: string): Promise<boolean> {
+  async function verifyCaptcha(token: string, ip: string): Promise<boolean> {
   const secret = process.env.RECAPTCHA_SECRET;
   const response = await axios.post('https://www.google.com/recaptcha/api/siteverify', null, {
     params: {
@@ -11,6 +11,13 @@ async function verifyCaptcha(token: string, ip: string): Promise<boolean> {
       remoteip: ip,
     },
   });
+
+  function extractClientIP(req: Request): string {
+    const forwarded = req.headers['x-forwarded-for'];
+    const ipList = typeof forwarded === 'string' ? forwarded.split(',') : [];
+    const rawIP = ipList.length > 0 ? ipList[0] : req.socket.remoteAddress || '';
+    return rawIP.trim();
+  }
 
   const data = response.data;
   return data.success && data.score >= 0.5;
@@ -41,9 +48,8 @@ export default class ContactsController {
 
     try {
       const accessKey = process.env.IPSTACK_API_KEY;
-      const ipForQuery = ip.includes(',') ? ip.split(',')[0].trim() : ip;
-      const response = await axios.get(`http://api.ipstack.com/${ipForQuery}?access_key=${accessKey}`);
-      country = response.data?.country_name || 'Desconocido';
+      const geoRes = await axios.get(`http://api.ipstack.com/${ip}?access_key=${accessKey}`);
+      country = geoRes.data?.country_name || 'Desconocido';
     } catch (error) {
       console.warn('No se pudo obtener el país con ipstack:', error);
     }
