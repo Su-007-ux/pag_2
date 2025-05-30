@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import ContactsModel from '../models/ContactsModel';
 import axios from 'axios';
+import { sendContactEmail } from '../utils/mailer';
 
 async function verifyCaptcha(token: string, ip: string): Promise<boolean> {
   const secret = process.env.RECAPTCHA_SECRET;
@@ -50,6 +51,15 @@ export default class ContactsController {
 
     try {
       await ContactsModel.add({ name, email, message, ip, date, country });
+      res.redirect('/');
+    } catch (error) {
+      console.error('Error al guardar contacto:', error);
+      res.status(500).send('Error al procesar el formulario.');
+    }
+
+    try {
+      await ContactsModel.add({ name, email, message, ip, date, country });
+      await sendContactEmail({ name, email, message, ip, date, country });
       res.redirect('/');
     } catch (error) {
       console.error('Error al guardar contacto:', error);
