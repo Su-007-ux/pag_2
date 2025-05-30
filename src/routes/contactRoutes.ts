@@ -3,7 +3,7 @@ import ContactsController from '../controllers/ContactsController';
 
 const router = Router();
 
-router.post('/contact/add', ContactsController.add);
-router.get('/admin/contacts', ContactsController.index);
+router.post('/contact/add', ContactsController.addContact);
+router.get('/admin/contacts', ContactsController.showContacts);
 
 export default router;
