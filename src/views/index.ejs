@@ -10,6 +10,7 @@
 
     gtag('config', 'G-NMP580DL0H');
   </script>
+  <script src="https://www.google.com/recaptcha/api.js?render=6LdbjlArAAAAAOVUzHa_IutYVKwcSaAgBJoZllOQ"></script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Service Tecno</title>
@@ -226,6 +227,24 @@
         event_label: 'Formulario de pago'
       });
     });
+  </script>
+
+  <script>
+  const form = document.getElementById('contact-form');
+  form?.addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    grecaptcha.ready(function () {
+      grecaptcha.execute('6LdbjlArAAAAAOVUzHa_IutYVKwcSaAgBJoZllOQ', { action: 'submit' }).then(function (token) {
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = 'g-recaptcha-response';
+        input.value = token;
+        form.appendChild(input);
+        form.submit();
+      });
+    });
+  });
   </script>
 </body>
 </html>

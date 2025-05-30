@@ -2,16 +2,44 @@ import { Request, Response } from 'express';
 import ContactsModel from '../models/ContactsModel';
 import axios from 'axios';
 
+async function verifyCaptcha(token: string, ip: string): Promise<boolean> {
+  const secret = process.env.RECAPTCHA_SECRET;
+  const response = await axios.post('https://www.google.com/recaptcha/api/siteverify', null, {
+    params: {
+      secret,
+      response: token,
+      remoteip: ip,
+    },
+  });
+
+  const data = response.data;
+  return data.success && data.score >= 0.5;
+}
+
 export default class ContactsController {
 
   static async addContact(req: Request, res: Response): Promise<void> {
     const { name, email, message } = req.body;
+    const token = req.body['g-recaptcha-response'];
     const ip = (req.headers['x-forwarded-for'] || req.socket.remoteAddress || '') as string;
     const date = new Date().toISOString();
     let country = 'Desconocido';
 
+    let isHuman = false;
     try {
-      // Obtener país desde ipapi (puedes cambiar a ipstack si prefieres)
+      isHuman = await verifyCaptcha(token, ip);
+    } catch (err) {
+      console.error('Error al verificar reCAPTCHA:', err);
+      res.status(500).send('Error de verificación de reCAPTCHA.');
+      return;
+    }
+
+    if (!isHuman) {
+      res.status(400).send('reCAPTCHA falló. Intenta nuevamente.');
+      return;
+    }
+
+    try {
       const response = await axios.get(`https://ipapi.co/${ip}/json/`);
       country = response.data || 'Desconocido';
     } catch (error) {
