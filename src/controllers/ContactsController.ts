@@ -6,13 +6,13 @@ export default class ContactsController {
 
   static async addContact(req: Request, res: Response): Promise<void> {
     const { name, email, message } = req.body;
-    const ip = req.headers['x-forwarded-for']?.toString().split(',')[0] || req.socket.remoteAddress || '';
+    const ip = (req.headers['x-forwarded-for'] || req.socket.remoteAddress || '') as string;
     const date = new Date().toISOString();
     let country = 'Desconocido';
 
     try {
       // Obtener país desde ipapi (puedes cambiar a ipstack si prefieres)
-      const response = await axios.get(`https://ipapi.co/${ip}/country_name/`);
+      const response = await axios.get(`https://ipapi.co/${ip}/json/`);
       country = response.data || 'Desconocido';
     } catch (error) {
       console.warn('No se pudo obtener el país desde IP:', ip);
