@@ -25,6 +25,10 @@ app.set('views', path.join(__dirname, '../src/views'));
 
 app.use(express.static(path.join(__dirname, '../public')));
 
+app.get('/admin', (req: Request, res: Response) => {
+  res.render('admin');
+});
+
 app.get('/', (req: Request, res: Response) => {
   res.render('index');
 });
