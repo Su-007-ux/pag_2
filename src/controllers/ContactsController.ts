@@ -40,10 +40,12 @@ export default class ContactsController {
     }
 
     try {
-      const response = await axios.get(`https://ipapi.co/${ip}/json/`);
-      country = response.data || 'Desconocido';
+      const accessKey = process.env.IPSTACK_API_KEY;
+      const ipForQuery = ip.includes(',') ? ip.split(',')[0].trim() : ip;
+      const response = await axios.get(`http://api.ipstack.com/${ipForQuery}?access_key=${accessKey}`);
+      country = response.data?.country_name || 'Desconocido';
     } catch (error) {
-      console.warn('No se pudo obtener el país desde IP:', ip);
+      console.warn('No se pudo obtener el país con ipstack:', error);
     }
 
     try {
