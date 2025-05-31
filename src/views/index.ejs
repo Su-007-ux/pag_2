@@ -1,15 +1,33 @@
+<!--
+  Vista principal de la aplicación Service Tecno.
+
+  Características:
+  - Muestra la información principal del servicio y los servicios ofrecidos.
+  - Permite contratar servicios mediante un formulario de pago oculto que se muestra al hacer clic en "Contratar".
+  - Incluye un formulario de contacto protegido con Google reCAPTCHA v3.
+  - Utiliza Bootstrap para el diseño y FontAwesome para los íconos.
+  - Incluye scripts para Google Analytics y seguimiento de eventos de formularios.
+  - El formulario de pago muestra mensajes de éxito si el pago fue realizado correctamente.
+  - El footer incluye enlaces a redes sociales y acceso a la administración de contactos.
+  - El formulario de contacto envía los datos a la ruta /contact/add.
+  - El formulario de pago envía los datos a la ruta /payment/add.
+  - El formulario de contacto añade el token de reCAPTCHA antes de enviar.
+  - El formulario de pago permite seleccionar el servicio, monto y moneda.
+  - Incluye scripts para enviar eventos a Google Analytics al enviar formularios.
+  - Incluye Google Analytics y Google reCAPTCHA v3.
+-->
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <!-- Google tag (gtag.js) -->
+  <!-- Google tag (gtag.js) para analítica -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-NMP580DL0H"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
-
     gtag('config', 'G-NMP580DL0H');
   </script>
+  <!-- Google reCAPTCHA v3 -->
   <script src="https://www.google.com/recaptcha/api.js?render=6LdbjlArAAAAAOVUzHa_IutYVKwcSaAgBJoZllOQ"></script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -17,6 +35,7 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <style>
+    /* Estilos personalizados para la página principal */
     body {
       background-color: #0d1117;
       color: #f1f1f1;
@@ -53,14 +72,14 @@
 </head>
 <body>
 
-  <!-- Navbar -->
+  <!-- Navbar principal -->
   <nav class="navbar navbar-expand-lg navbar-dark">
     <div class="container">
       <a class="navbar-brand" href="#"><i class="fas fa-tools"></i> Service Tecno</a>
     </div>
   </nav>
 
-  <!-- Hero Section -->
+  <!-- Sección principal (Hero) -->
   <section class="hero">
     <div class="container">
       <h1 class="display-4">Reparación Profesional de PCs y Laptops</h1>
@@ -69,7 +88,7 @@
     </div>
   </section>
 
-  <!-- Servicios -->
+  <!-- Sección de servicios -->
   <section class="services py-5">
     <div class="container text-center">
       <h2 class="mb-4">Nuestros Servicios</h2>
@@ -96,7 +115,7 @@
     </div>
   </section>
 
-  <!-- Formulario oculto -->
+  <!-- Formulario de pago (oculto por defecto, se muestra al contratar un servicio) -->
   <div id="paymentForm" class="container my-5" style="display: none;">
     <h3 class="text-center mb-4">Formulario de pago</h3>
 
@@ -107,7 +126,6 @@
     <% } %>
 
     <form action="/payment/add" method="POST" class="border p-4 shadow rounded">
-
       <!-- Campo oculto con nombre del servicio -->
       <input type="hidden" name="service" id="serviceField">
 
@@ -162,7 +180,7 @@
     </form>
   </div>
 
-  <!-- Script del formulario -->
+  <!-- Script para mostrar el formulario de pago y asignar el servicio seleccionado -->
   <script>
     function togglePaymentForm(service) {
       const form = document.getElementById('paymentForm');
@@ -172,7 +190,7 @@
     }
   </script>
 
-  <!-- Contacto -->
+  <!-- Sección de contacto -->
   <section id="contacto" class="py-5 bg-dark">
     <div class="container">
       <h2 class="text-center mb-4">Contáctanos</h2>
@@ -198,7 +216,7 @@
     </div>
   </section>
 
-  <!-- Footer -->
+  <!-- Footer con enlaces a redes sociales y acceso a administración -->
   <footer class="footer">
     <div class="mb-3">
       <a href="https://facebook.com" class="text-white me-3" target="_blank"><i class="fab fa-facebook fa-lg"></i></a>
@@ -210,14 +228,17 @@
     <p>&copy; 2025 Service Tecno. Todos los derechos reservados.</p>
   </footer>
 
+  <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Script para enviar eventos a Google Analytics al enviar formularios -->
   <script>
     document.getElementById('contact-form')?.addEventListener('submit', function () {
-    gtag('event', 'submit_contact_form', {
-      event_category: 'Formulario',
-      event_label: 'Formulario de contacto'
+      gtag('event', 'submit_contact_form', {
+        event_category: 'Formulario',
+        event_label: 'Formulario de contacto'
+      });
     });
-  });
   </script>
 
   <script>
@@ -229,22 +250,23 @@
     });
   </script>
 
+  <!-- Script para añadir el token de reCAPTCHA al formulario de contacto antes de enviarlo -->
   <script>
-  const form = document.getElementById('contact-form');
-  form?.addEventListener('submit', function (e) {
-    e.preventDefault();
+    const form = document.getElementById('contact-form');
+    form?.addEventListener('submit', function (e) {
+      e.preventDefault();
 
-    grecaptcha.ready(function () {
-      grecaptcha.execute('6LdbjlArAAAAAOVUzHa_IutYVKwcSaAgBJoZllOQ', { action: 'submit' }).then(function (token) {
-        const input = document.createElement('input');
-        input.type = 'hidden';
-        input.name = 'g-recaptcha-response';
-        input.value = token;
-        form.appendChild(input);
-        form.submit();
+      grecaptcha.ready(function () {
+        grecaptcha.execute('6LdbjlArAAAAAOVUzHa_IutYVKwcSaAgBJoZllOQ', { action: 'submit' }).then(function (token) {
+          const input = document.createElement('input');
+          input.type = 'hidden';
+          input.name = 'g-recaptcha-response';
+          input.value = token;
+          form.appendChild(input);
+          form.submit();
+        });
       });
     });
-  });
   </script>
 </body>
 </html>

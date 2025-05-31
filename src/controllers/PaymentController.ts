@@ -5,13 +5,24 @@ import PaymentModel from '../models/PaymentModel';
 export default class PaymentController {
   static async add(req: Request, res: Response) {
     try {
-      const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
-      const date = new Date().toISOString();
+      // Validacion de datos básicos
       const {
         email, cardName, cardNumber, expMonth, expYear,
         cvv, amount, currency, service
       } = req.body;
 
+      if (!email || !cardName || !cardNumber || !expMonth || !expYear || !cvv || !amount || !currency || !service) {
+        return res.render('index', {
+          paymentError: 'Faltan datos obligatorios.'
+        });
+      }
+
+      // Obtenecion de IP
+      const ipRaw = req.headers['x-forwarded-for'] || req.socket.remoteAddress || '';
+      const ip = Array.isArray(ipRaw) ? ipRaw[0] : (ipRaw as string);
+      const date = new Date().toISOString();
+
+      // se prepara el paymentpayload
       const paymentPayload = {
         cardNumber,
         expMonth,
@@ -20,19 +31,27 @@ export default class PaymentController {
         amount,
         currency,
       };
-      
+
+      const paymentToken = process.env.PAYMENT_API_TOKEN;
+      if (!paymentToken) {
+        console.error('PAYMENT_API_TOKEN no está definido.');
+        return res.render('index', {
+          paymentError: 'Configuración del servidor incompleta.'
+        });
+      }
+
       const apiResponse = await axios.post(
         'https://fakepayment.onrender.com/pay',
         paymentPayload,
         {
           headers: {
-            Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiZmFrZSBwYXltZW50IiwiZGF0ZSI6IjIwMjUtMDUtMzBUMjI6NDQ6NTAuOTcyWiIsImlhdCI6MTc0ODY0NTA5MH0.JLzcaeAvnBVhlewjTCUeMN-mTCQoPnEVXObvFKRvsfc'
+            Authorization: `Bearer ${paymentToken}`
           }
         }
       );
 
       if (apiResponse.data && apiResponse.data.success) {
-        
+        // Guardar el pago en la base de datos
         await PaymentModel.add({
           email,
           cardName,

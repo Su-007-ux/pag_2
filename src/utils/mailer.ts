@@ -1,5 +1,9 @@
 import nodemailer from 'nodemailer';
 
+/**
+ * Configura el transporte de correo usando las variables de entorno.
+ * Se utiliza para enviar notificaciones por email cuando se recibe un nuevo contacto.
+ */
 const transporter = nodemailer.createTransport({
   host: process.env.EMAIL_HOST,
   port: Number(process.env.EMAIL_PORT),
@@ -10,6 +14,18 @@ const transporter = nodemailer.createTransport({
   },
 });
 
+/**
+ * Envía un correo electrónico con los datos de un nuevo contacto recibido.
+ *
+ * @param data Objeto con la información del contacto:
+ *  - name: nombre del remitente
+ *  - email: correo electrónico del remitente
+ *  - message: mensaje enviado
+ *  - ip: dirección IP desde la que se envió el mensaje
+ *  - country: país detectado por la IP
+ *  - date: fecha y hora del envío
+ * @returns Promesa que resuelve cuando el correo ha sido enviado.
+ */
 export async function sendContactEmail(data: {
   name: string;
   email: string;
