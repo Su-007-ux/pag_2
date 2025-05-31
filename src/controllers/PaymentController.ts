@@ -7,31 +7,57 @@ export default class PaymentController {
     try {
       const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
       const date = new Date().toISOString();
+      const {
+        email, cardName, cardNumber, expMonth, expYear,
+        cvv, amount, currency, service
+      } = req.body;
 
-      const paymentData = {
-        ...req.body,
-        ip,
-        date
+      const paymentPayload = {
+        cardNumber,
+        expMonth,
+        expYear,
+        cvv,
+        amount,
+        currency,
       };
+      
+      const apiResponse = await axios.post(
+        'https://fakepayment.onrender.com/pay',
+        paymentPayload,
+        {
+          headers: {
+            Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiZmFrZSBwYXltZW50IiwiZGF0ZSI6IjIwMjUtMDUtMzBUMjI6NDQ6NTAuOTcyWiIsImlhdCI6MTc0ODY0NTA5MH0.JLzcaeAvnBVhlewjTCUeMN-mTCQoPnEVXObvFKRvsfc'
+          }
+        }
+      );
 
-      await PaymentModel.add(paymentData);
+      if (apiResponse.data && apiResponse.data.success) {
+        
+        await PaymentModel.add({
+          email,
+          cardName,
+          cardNumber,
+          expMonth,
+          expYear,
+          cvv,
+          amount,
+          currency,
+          service,
+          ip,
+          date
+        });
 
-      await axios.post('https://fakepayment.onrender.com/api/pay', {
-        cardNumber: req.body.cardNumber,
-        cardHolder: req.body.cardName,
-        expMonth: req.body.expMonth,
-        expYear: req.body.expYear,
-        cvv: req.body.cvv,
-        amount: req.body.amount,
-        currency: req.body.currency
-      });
-
-      res.redirect('/payment/success');
-
+        return res.render('index', { paymentSuccess: true });
+      } else {
+        return res.render('index', {
+          paymentError: 'Pago rechazado por la pasarela.'
+        });
+      }
     } catch (err) {
-      console.error('Error en el proceso de pago:', err);
-      res.status(500).send('Error al procesar el pago');
+      console.error('Error al procesar el pago:', err);
+      return res.render('index', {
+        paymentError: 'Error al procesar el pago. Intenta más tarde.'
+      });
     }
   }
 }
-
