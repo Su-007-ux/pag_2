@@ -41,7 +41,7 @@ export default class PaymentController {
       }
 
       const apiResponse = await axios.post(
-        'https://fakepayment.onrender.com/pay',
+        'https://fakepayment.onrender.com',
         paymentPayload,
         {
           headers: {
