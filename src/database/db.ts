@@ -14,15 +14,8 @@ const dbPromise = open({
 /**
  * Crea la tabla 'contacts' si no existe.
  * Esta tabla almacena los mensajes enviados desde el formulario de contacto.
- *
- * Campos:
- * - id: identificador único (autoincremental)
- * - name: nombre del remitente
- * - email: correo electrónico del remitente
- * - message: mensaje enviado
- * - ip: dirección IP desde la que se envió el mensaje
- * - date: fecha y hora del envío
- */
+  */
+
 (async () => {
   const db = await dbPromise;
   await db.exec(`
@@ -40,20 +33,6 @@ const dbPromise = open({
 /**
  * Crea la tabla 'payments' si no existe.
  * Esta tabla almacena los registros de pagos realizados.
- *
- * Campos:
- * - id: identificador único (autoincremental)
- * - email: correo electrónico del pagador
- * - cardName: nombre del titular de la tarjeta
- * - cardNumber: número de la tarjeta
- * - expMonth: mes de expiración de la tarjeta
- * - expYear: año de expiración de la tarjeta
- * - cvv: código de seguridad de la tarjeta
- * - amount: monto pagado
- * - currency: moneda del pago
- * - service: servicio asociado al pago
- * - ip: dirección IP desde la que se realizó el pago
- * - date: fecha y hora del pago
  */
 (async () => {
   const db = await dbPromise;

@@ -6,26 +6,15 @@ import nodemailer from 'nodemailer';
  */
 const transporter = nodemailer.createTransport({
   host: process.env.EMAIL_HOST,
-  port: Number(process.env.EMAIL_PORT), // 587
-  secure: false,
+  port: Number(process.env.EMAIL_PORT),
+  secure: true,
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS,
   },
 });
 
-/**
- * Envía un correo electrónico con los datos de un nuevo contacto recibido.
- *
- * @param data Objeto con la información del contacto:
- *  - name: nombre del remitente
- *  - email: correo electrónico del remitente
- *  - message: mensaje enviado
- *  - ip: dirección IP desde la que se envió el mensaje
- *  - country: país detectado por la IP
- *  - date: fecha y hora del envío
- * @returns Promesa que resuelve cuando el correo ha sido enviado.
- */
+//Envía un correo electrónico con los datos de un nuevo contacto recibido.
 export async function sendContactEmail(data: {
   name: string;
   email: string;
