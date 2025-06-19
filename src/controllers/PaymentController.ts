@@ -79,4 +79,8 @@ export default class PaymentController {
       });
     }
   }
+
+  static success(req: Request, res: Response) {
+    res.render('index', { paymentSuccess: true });
+  }
 }
