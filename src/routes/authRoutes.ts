@@ -24,9 +24,12 @@ router.get('/auth/google',
 
 router.get('/auth/google/callback',
   passport.authenticate('google', {
-    failureRedirect: '/login',
-    successRedirect: '/contacts'
-  })
+    failureRedirect: '/login'
+  }),
+  (req, res) => {
+    req.session.loginSuccess = true;
+    res.redirect('/');
+  }
 );
 
 export default router;
