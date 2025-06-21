@@ -1,9 +1,16 @@
-import { Router } from 'express';
-import { requireLogin } from '../middlewares/auth';
+import { Router, Request, Response, NextFunction } from 'express';
 
 const router = Router();
 
-router.get('/dashboard', requireLogin, (req, res) => {
+// Middleware para proteger la ruta solo para admin
+function requireAdmin(req: Request, res: Response, next: NextFunction) {
+  if (req.session && req.session.userId === 'admin' && req.session.isAdmin) {
+    return next();
+  }
+  return res.redirect('/');
+}
+
+router.get('/dashboard', requireAdmin, (req: Request, res: Response) => {
   res.render('dashboard');
 });
 

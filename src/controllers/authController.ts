@@ -2,18 +2,17 @@ import { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
 import dbPromise from '../database/db';
 
-
+// Extiende la sesión para incluir los campos personalizados
 declare module 'express-session' {
   interface SessionData {
-    userId: number;
+    userId: number | string;
+    isAdmin?: boolean;
+    loginSuccess?: boolean;
   }
 }
 
 export const showLogin = (req: Request, res: Response) => {
-  res.render('login', {
-    ogTitle: 'Iniciar sesión',
-    ogDescription: 'Accede a tu cuenta.'
-  });
+  res.render('login');
 };
 
 export const login = async (req: Request, res: Response) => {
@@ -22,16 +21,26 @@ export const login = async (req: Request, res: Response) => {
     return res.render('login', { error: 'Todos los campos son obligatorios' });
   }
   try {
+    // Caso admin hardcodeado
+    if (username === 'admin' && password === '1234') {
+      req.session.userId = 'admin';
+      req.session.isAdmin = true;
+      return res.redirect('/dashboard');
+    }
+
+    // Caso usuario registrado
     const database = await dbPromise;
     const user = await database.get('SELECT * FROM users WHERE username = ?', [username]);
     if (user && await bcrypt.compare(password, user.password_hash)) {
       req.session.userId = user.id;
-      res.redirect('/dashboard');
+      req.session.isAdmin = false;
+      req.session.loginSuccess = true;
+      return res.redirect('/');
     } else {
-      res.render('login', { error: 'Credenciales incorrectas' });
+      return res.render('login', { error: 'Credenciales incorrectas' });
     }
   } catch (err) {
-    res.render('login', { error: 'Error en el servidor' });
+    return res.render('login', { error: 'Error en el servidor' });
   }
 };
 
