@@ -54,5 +54,17 @@ const dbPromise = open({
   `);
 })();
 
+(async () => {
+  const db = await dbPromise;
+  await db.run(`
+    CREATE TABLE IF NOT EXISTS users (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      username TEXT UNIQUE,
+      password_hash TEXT,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )
+  `);
+})();
+
 // Exporta la promesa de conexión para ser utilizada en los modelos
 export default dbPromise;

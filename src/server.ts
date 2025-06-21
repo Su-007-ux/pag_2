@@ -1,9 +1,14 @@
 import express, { Request, Response } from 'express';
-import bodyParser from 'body-parser';
+import session from 'express-session';
 import path from 'path';
 import contactRoutes from './routes/contactRoutes';
 import paymentRoutes from './routes/paymentRoutes';
 import ContactsController from './controllers/ContactsController';
+import connectSqlite3 from 'connect-sqlite3';
+import authRoutes from './routes/authRoutes';
+import passport from './auth/passport';
+import dashboardRoutes from './routes/dashboardRoutes';
+import apps from './apps';
 
 /**
  * Archivo principal del servidor Express.
@@ -15,6 +20,31 @@ const app = express();
 // Middleware para parsear datos de formularios (URL-encoded)
 app.use(express.urlencoded({ extended: true }));
 
+// Configuración de sesión (debe ir antes de las rutas que la usan)
+const SQLiteStore = connectSqlite3(session);
+app.use(session({
+  store: new SQLiteStore({ db: 'sessions.sqlite' }) as unknown as session.Store,
+  secret: process.env.SESSION_SECRET || 'secreto_seguro',
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    httpOnly: true,
+    sameSite: 'lax',
+    secure: process.env.NODE_ENV === 'production',
+    maxAge: 15 * 60 * 1000 // 15 minutos
+  }
+}));
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+// Configuración del motor de vistas EJS
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, '../src/views'));
+
+// Servir archivos estáticos desde la carpeta 'public'
+app.use(express.static(path.join(__dirname, '../public')));
+
 // Rutas para el manejo de contactos
 app.use('/', contactRoutes);
 
@@ -24,30 +54,25 @@ app.get('/admin', ContactsController.showContacts);
 // Rutas para el manejo de pagos
 app.use(paymentRoutes);
 
-// Middleware para parsear datos de formularios (body-parser, redundante con express.urlencoded)
-app.use(bodyParser.urlencoded({ extended: true }));
+// Rutas de autenticación
+app.use('/', authRoutes);
 
-// Configuración del motor de vistas EJS
-app.set('view engine', 'ejs');
+// Rutas del panel de control
+app.use('/', dashboardRoutes);
 
-// Directorio de vistas (puede sobrescribirse, solo el último tiene efecto)
-app.set('views', path.join(__dirname, 'views'));
-app.set('views', path.join(__dirname, '../src/views'));
-
-// Servir archivos estáticos desde la carpeta 'public'
-app.use(express.static(path.join(__dirname, '../public')));
-
-// Redirección para la ruta /admin (puede causar conflicto con la anterior)
-app.get("/admin", (req, res) => {
-  res.redirect("/admin/contacts");
-});
-
-// Ruta principal: renderiza la vista 'index'
+// Ruta principal: renderiza la vista 'index' con metadatos OG
 app.get('/', (req: Request, res: Response) => {
-  res.render('index');
+  res.render('index', {
+    ogTitle: 'Página Principal',
+    ogDescription: 'Bienvenido a la página principal de mi sitio. Completa el formulario de contacto.',
+    ogType: 'website',
+    ogUrl: 'https://tusitio.com/',
+    ogImage: 'https://tusitio.com/imagen-principal.png'
+  });
 });
 
 // Inicia el servidor en el puerto 3000
 app.listen(3000, () => {
   console.log('Server is running on http://localhost:3000');
 });
+

@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title><%= ogTitle || 'Mi Sitio' %></title>
+    <meta property="og:title" content="<%= ogTitle || 'Mi Sitio' %>">
+    <meta property="og:description" content="<%= ogDescription || 'Descripción por defecto' %>">
+    <meta property="og:type" content="<%= ogType || 'website' %>">
+    <meta property="og:url" content="<%= ogUrl || 'https://tusitio.com' %>">
+    <meta property="og:image" content="<%= ogImage || 'https://tusitio.com/imagen.png' %>">
+    <!-- Otros metadatos y enlaces -->
+</head>
+<body>
+    <%- body %>
+</body>
+</html>

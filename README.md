@@ -17,6 +17,8 @@ Este proyecto es una aplicación web para la gestión de servicios técnicos, pa
   - [Correo electrónico (Nodemailer)](#correo-electrónico-nodemailer)
   - [Pasarela de pagos (Fake Payment API)](#pasarela-de-pagos-fake-payment-api)
   - [Google Analytics](#google-analytics)
+  - [Protocolo Open Graph (OG)](#protocolo-open-graph-og)
+  - [Gestión segura de sesiones](#gestión-segura-de-sesiones)
 - [Ejecución del proyecto](#ejecución-del-proyecto)
 - [Despliegue en Render](#despliegue-en-render)
 - [Notas de seguridad](#notas-de-seguridad)
@@ -69,6 +71,13 @@ EMAIL_TO=destino@tucorreo.com
 
 # Token para la API de pagos
 PAYMENT_API_TOKEN=TU_TOKEN_FAKEPAYMENT
+
+# Clave de sesión segura
+SESSION_SECRET=TU_SESION_SECRETA
+
+# Google OAuth (si usas autenticación con Google)
+GOOGLE_CLIENT_ID=TU_CLIENT_ID
+GOOGLE_CLIENT_SECRET=TU_CLIENT_SECRET
 ```
 
 ---
@@ -80,6 +89,7 @@ src/
   controllers/
     ContactsController.ts
     PaymentController.ts
+    authController.ts
   database/
     db.ts
   models/
@@ -88,11 +98,24 @@ src/
   routes/
     contactRoutes.ts
     paymentRoutes.ts
+    authRoutes.ts
+    dashboardRoutes.ts
+    index.ts
   utils/
     mailer.ts
   views/
     index.ejs
     admin.ejs
+    dashboard.ejs
+    layout.ejs
+    login.ejs
+    payments.ejs
+    register.ejs
+  middlewares/
+    auth.ts
+  auth/
+    passport.ts
+  apps.ts
   server.ts
 .env
 sqlite.db
@@ -104,7 +127,7 @@ sqlite.db
 
 ### Base de datos SQLite
 
-- El archivo `src/database/db.ts` configura la base de datos SQLite y crea las tablas `contacts` y `payments` si no existen.
+- El archivo `src/database/db.ts` configura la base de datos SQLite y crea las tablas `contacts`, `payments` y `users` si no existen.
 - La base de datos se almacena en la raíz del proyecto como `sqlite.db`.
 - Los modelos (`ContactsModel.ts`, `PaymentModel.ts`) gestionan las operaciones CRUD.
 
@@ -134,6 +157,43 @@ sqlite.db
 
 - El script de Google Analytics está incluido en las vistas (`index.ejs`, `admin.ejs`).
 - Se envían eventos personalizados al enviar los formularios de contacto y pago.
+
+### Protocolo Open Graph (OG)
+
+- El layout principal (`views/layout.ejs`) incluye etiquetas OG dinámicas para mejorar la visualización de la web al compartir en redes sociales.
+- Los metadatos OG (`ogTitle`, `ogDescription`, `ogType`, `ogUrl`, `ogImage`) se pasan desde el backend al renderizar cada vista.
+- Ejemplo de uso en el layout:
+  ```html
+  <meta property="og:title" content="<%= ogTitle || 'Mi Sitio' %>">
+  <meta property="og:description" content="<%= ogDescription || 'Descripción por defecto' %>">
+  <meta property="og:type" content="<%= ogType || 'website' %>">
+  <meta property="og:url" content="<%= ogUrl || 'https://tusitio.com' %>">
+  <meta property="og:image" content="<%= ogImage || 'https://tusitio.com/imagen.png' %>">
+  ```
+
+### Gestión segura de sesiones
+
+- Las sesiones se gestionan con `express-session` y `connect-sqlite3`.
+- Las cookies de sesión están configuradas con:
+  - `httpOnly: true` (no accesible por JavaScript)
+  - `sameSite: 'lax'` (protección CSRF)
+  - `secure: true` solo en producción (requiere HTTPS)
+  - `maxAge: 15 * 60 * 1000` (expiran tras 15 minutos de inactividad)
+- Ejemplo de configuración en `server.ts`:
+  ```typescript
+  app.use(session({
+    store: new SQLiteStore({ db: 'sessions.sqlite' }) as unknown as session.Store,
+    secret: process.env.SESSION_SECRET || 'secreto_seguro',
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      httpOnly: true,
+      sameSite: 'lax',
+      secure: process.env.NODE_ENV === 'production',
+      maxAge: 15 * 60 * 1000 // 15 minutos
+    }
+  }));
+  ```
 
 ---
 
@@ -168,6 +228,7 @@ sqlite.db
 
 - Usa siempre HTTPS en producción.
 - Cambia las claves y contraseñas de ejemplo por las tuyas propias.
+- Las cookies de sesión son seguras y expiran tras 15 minutos de inactividad.
 - Revisa las políticas de privacidad y cumplimiento de PCI DSS si procesas pagos reales.
 
 ---

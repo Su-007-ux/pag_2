@@ -24,12 +24,15 @@ export default class PaymentController {
 
       // se prepara el paymentpayload
       const paymentPayload = {
-        cardNumber,
-        expMonth,
-        expYear,
-        cvv,
-        amount,
-        currency,
+        "amount": parseFloat(amount),
+        "card-number": parseInt(cardNumber),
+        "cvv": parseInt(cvv),
+        "expiration-month": expMonth,
+        "expiration-year": expYear,
+        "full-name": cardName,
+        "currency": currency,
+        "description": "pago de servicio",
+        "reference": service,
       };
 
       const paymentToken = process.env.PAYMENT_API_TOKEN;
@@ -80,7 +83,13 @@ export default class PaymentController {
     }
   }
 
-  static success(req: Request, res: Response) {
-    res.render('index', { paymentSuccess: true });
+  static async list(req: Request, res: Response) {
+    try {
+      const db = await require('../database/db').default;
+      const payments = await db.all('SELECT * FROM payments ORDER BY date DESC');
+      res.render('payments', { payments });
+    } catch (err) {
+      res.status(500).send('Error al obtener pagos');
+    }
   }
 }

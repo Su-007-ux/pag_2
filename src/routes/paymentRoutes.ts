@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import { requireLogin } from '../middlewares/auth';
 import PaymentController from '../controllers/PaymentController';
 
 /**
@@ -22,5 +23,7 @@ router.post('/payment/add', PaymentController.add);
 router.get('/payment/success', (req, res) => {
   res.render('index', { paymentSuccess: true });
 });
+
+router.get('/payments', requireLogin, PaymentController.list);
 
 export default router;

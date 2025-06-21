@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import { requireLogin } from '../middlewares/auth';
 import ContactsController from '../controllers/ContactsController';
 
 /**
@@ -19,6 +20,6 @@ router.post('/contact/add', ContactsController.addContact);
  * Ruta para mostrar la lista de contactos en la administración.
  * Llama al método 'showContacts' del ContactsController.
  */
-router.get('/admin/contacts', ContactsController.showContacts);
+router.get('/contacts', requireLogin, ContactsController.showContacts);
 
 export default router;

@@ -15,7 +15,8 @@
 </head>
 <body class="container mt-5">
   <h1 class="mb-4">Lista de Contactos</h1>
-  <table class="table table-bordered">
+  <input type="text" id="busqueda" placeholder="Buscar por nombre o email" onkeyup="filtrarContactos()" class="form-control mb-4">
+  <table class="table table-bordered" id="tablaContactos">
     <thead>
       <tr>
         <th>Nombre</th>
@@ -29,8 +30,8 @@
     <tbody>
       <% contacts.forEach(contact => { %>
         <tr>
-          <td><%= contact.name %></td>
-          <td><%= contact.email %></td>
+          <td class="nombre"><%= contact.name %></td>
+          <td class="email"><%= contact.email %></td>
           <td><%= contact.message %></td>
           <td><%= contact.ip %></td>
           <td><%= contact.date %></td>
@@ -39,5 +40,21 @@
       <% }) %>
     </tbody>
   </table>
+
+  <script>
+    function filtrarContactos() {
+        const filtro = document.getElementById('busqueda').value.toLowerCase();
+        const filas = document.querySelectorAll('#tablaContactos tbody tr');
+        filas.forEach(fila => {
+            const nombre = fila.querySelector('.nombre').textContent.toLowerCase();
+            const email = fila.querySelector('.email').textContent.toLowerCase();
+            if (nombre.includes(filtro) || email.includes(filtro)) {
+                fila.style.display = '';
+            } else {
+                fila.style.display = 'none';
+            }
+        });
+    }
+  </script>
 </body>
 </html>
