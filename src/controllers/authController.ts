@@ -10,7 +10,10 @@ declare module 'express-session' {
 }
 
 export const showLogin = (req: Request, res: Response) => {
-  res.render('login');
+  res.render('login', {
+    ogTitle: 'Iniciar sesión',
+    ogDescription: 'Accede a tu cuenta.'
+  });
 };
 
 export const login = async (req: Request, res: Response) => {
