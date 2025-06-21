@@ -62,12 +62,16 @@ app.use('/', dashboardRoutes);
 
 // Ruta principal: renderiza la vista 'index' con metadatos OG
 app.get('/', (req: Request, res: Response) => {
+  const loginSuccess = req.session?.loginSuccess;
+  if (loginSuccess) delete req.session.loginSuccess;
   res.render('index', {
     ogTitle: 'Página Principal',
     ogDescription: 'Bienvenido a la página principal de mi sitio. Completa el formulario de contacto.',
     ogType: 'website',
     ogUrl: 'https://tusitio.com/',
-    ogImage: 'https://tusitio.com/imagen-principal.png'
+    ogImage: 'https://tusitio.com/imagen-principal.png',
+    userId: req.session?.userId,
+    loginSuccess 
   });
 });
 
