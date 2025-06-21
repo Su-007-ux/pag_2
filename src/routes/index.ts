@@ -7,7 +7,8 @@ router.get('/', (req: Request, res: Response) => {
         ogDescription: 'Bienvenido a la página principal de mi sitio. Completa el formulario de contacto.',
         ogType: 'website',
         ogUrl: 'https://tusitio.com/',
-        ogImage: 'https://tusitio.com/imagen-principal.png'
+        ogImage: 'https://tusitio.com/imagen-principal.png',
+        userId: req.session.userId // <-- Añade esto
     });
 });
 
