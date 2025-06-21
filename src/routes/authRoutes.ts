@@ -5,7 +5,13 @@ import passport from '../auth/passport';
 
 const router = Router();
 
-router.get('/login', authController.showLogin);
+router.get('/login', (req, res) => {
+  res.render('login', {
+    ogTitle: 'Iniciar sesión',
+    ogDescription: 'Accede a tu cuenta.'
+  });
+});
+
 router.post('/login', authController.login);
 router.get('/logout', authController.logout);
 
