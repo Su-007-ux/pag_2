@@ -40,7 +40,7 @@ app.use(passport.session());
 
 // Configuración del motor de vistas EJS
 app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, '../views'));
+app.set('views', path.join(__dirname, '../src/views'));
 
 // Servir archivos estáticos desde la carpeta 'public'
 app.use(express.static(path.join(__dirname, '../public')));
