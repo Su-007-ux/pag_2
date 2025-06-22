@@ -41,7 +41,7 @@ app.use(passport.session());
 
 // Configuración del motor de vistas EJS
 app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, 'views'));
+app.set('views', path.join(__dirname, '../src/views'));
 app.use(expressLayouts);
 app.set('layout', 'layout'); // Usa layout.ejs por defecto
 
