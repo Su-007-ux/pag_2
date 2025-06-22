@@ -8,7 +8,7 @@ import connectSqlite3 from 'connect-sqlite3';
 import authRoutes from './routes/authRoutes';
 import passport from './auth/passport';
 import dashboardRoutes from './routes/dashboardRoutes';
-import apps from './apps';
+
 
 /**
  * Archivo principal del servidor Express.

@@ -23,6 +23,7 @@ export const login = async (req: Request, res: Response) => {
   try {
     // Caso admin hardcodeado
     if (username === 'admin' && password === '1234') {
+      console.log('Login admin detectado');
       req.session.userId = 'admin';
       req.session.isAdmin = true;
       return res.redirect('/dashboard');
