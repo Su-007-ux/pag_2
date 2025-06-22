@@ -72,7 +72,6 @@ app.get('/', (req: Request, res: Response) => {
     ogUrl: 'https://tusitio.com/',
     ogImage: 'https://tusitio.com/imagen-principal.png',
     userId: req.session?.userId,
-    loginSuccess 
   });
 });
 

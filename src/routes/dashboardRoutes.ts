@@ -4,7 +4,8 @@ const router = Router();
 
 // Middleware para proteger la ruta solo para admin
 function requireAdmin(req: Request, res: Response, next: NextFunction) {
-  if (req.session && req.session.userId === 'admin' && req.session.isAdmin) {
+  console.log('Session en dashboard:', req.session);
+  if (req.session.userId === 'admin' && req.session.isAdmin) {
     return next();
   }
   return res.redirect('/');
