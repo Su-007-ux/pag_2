@@ -5,6 +5,8 @@ import PaymentModel from '../models/PaymentModel';
 export default class PaymentController {
   static async add(req: Request, res: Response) {
     try {
+      console.log('Datos recibidos en el pago:', req.body);
+
       // Validacion de datos básicos
       const {
         email, cardName, cardNumber, expMonth, expYear,
@@ -35,6 +37,7 @@ export default class PaymentController {
         "reference": service,
       };
 
+      console.log('Enviando petición a la API de pagos...');
       const paymentToken = process.env.PAYMENT_API_TOKEN;
       if (!paymentToken) {
         console.error('PAYMENT_API_TOKEN no está definido.');
@@ -53,6 +56,8 @@ export default class PaymentController {
         }
       );
 
+      console.log('Respuesta de la API:', apiResponse.data);
+
       if (apiResponse.data && apiResponse.data.success) {
         // Guardar el pago en la base de datos
         await PaymentModel.add({
@@ -68,6 +73,8 @@ export default class PaymentController {
           ip,
           date
         });
+
+        console.log('Pago guardado en la base de datos.');
 
         return res.render('index', { paymentSuccess: true });
       } else {
