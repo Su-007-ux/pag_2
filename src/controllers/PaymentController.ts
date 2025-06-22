@@ -2,6 +2,8 @@ import { Request, Response } from 'express';
 import axios from 'axios';
 import PaymentModel from '../models/PaymentModel';
 
+const PAYMENT_API_URL = process.env.PAYMENT_API_URL;
+
 export default class PaymentController {
   static async add(req: Request, res: Response) {
     try {
@@ -46,12 +48,20 @@ export default class PaymentController {
         });
       }
 
+      if (!PAYMENT_API_URL) {
+        console.error('PAYMENT_API_URL no está definido.');
+        return res.render('index', {
+          paymentError: 'Configuración del servidor incompleta.'
+        });
+      }
+
       const apiResponse = await axios.post(
-        'https://fakepayment.onrender.com',
+        PAYMENT_API_URL,
         paymentPayload,
         {
           headers: {
-            Authorization: `Bearer ${paymentToken}`
+            Authorization: `Bearer ${paymentToken}`,
+            'Content-Type': 'application/json'
           }
         }
       );
