@@ -12,7 +12,7 @@ router.get('/login', (req, res) => {
   });
 });
 
-router.post('/login', authController.login);
+router.post('/login', authController.showLogin);
 router.get('/logout', authController.logout);
 
 router.get('/register', authController.showRegister);
