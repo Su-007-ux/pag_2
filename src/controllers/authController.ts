@@ -2,13 +2,12 @@ import { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
 import dbPromise from '../database/db';
 
-// Extiende la sesión para incluir los campos personalizados
-declare module 'express-session' {
-  interface SessionData {
-    userId: number | string;
-    isAdmin?: boolean;
-    loginSuccess?: boolean;
+async function authenticateUser(username: string, password: string) {
+  // Simulación: usuario válido si username === "admin" y password === "1234"
+  if (username === 'admin' && password === '1234') {
+    return { id: 1, username: 'admin', isAdmin: true };
   }
+  return null;
 }
 
 export const showLogin = (req: Request, res: Response) => {
@@ -21,20 +20,11 @@ export const login = async (req: Request, res: Response) => {
     return res.render('login', { error: 'Todos los campos son obligatorios' });
   }
   try {
-    // Caso admin hardcodeado
-    if (username === 'admin' && password === '1234') {
-      console.log('Login admin detectado');
-      req.session.userId = 'admin';
-      req.session.isAdmin = true;
-      return res.redirect('/dashboard');
-    }
+    const user = await authenticateUser(username, password);
 
-    // Caso usuario registrado
-    const database = await dbPromise;
-    const user = await database.get('SELECT * FROM users WHERE username = ?', [username]);
-    if (user && await bcrypt.compare(password, user.password_hash)) {
+    if (user) {
       req.session.userId = user.id;
-      req.session.isAdmin = false;
+      req.session.isAdmin = user.isAdmin;
       req.session.loginSuccess = true;
       return res.redirect('/');
     } else {
@@ -48,9 +38,9 @@ export const login = async (req: Request, res: Response) => {
 export const logout = (req: Request, res: Response) => {
   req.session.destroy((err) => {
     if (err) {
-      return res.status(500).send('Error al cerrar sesión');
+      return res.status(500).json({ message: 'Error al cerrar sesión' });
     }
-    res.redirect('/login');
+    res.status(200).json({ message: 'Sesión cerrada correctamente' });
   });
 };
 
@@ -74,5 +64,16 @@ export const register = async (req: Request, res: Response) => {
     res.redirect('/login');
   } catch (err) {
     res.render('register', { error: 'El usuario ya existe o hubo un error' });
+  }
+};
+
+export const getProfile = (req: Request, res: Response) => {
+  if (req.session.userId) {
+    res.status(200).json({
+      userId: req.session.userId,
+      isAdmin: req.session.isAdmin,
+    });
+  } else {
+    res.status(401).json({ message: 'No autenticado' });
   }
 };
