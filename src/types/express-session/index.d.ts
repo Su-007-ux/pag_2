@@ -2,9 +2,9 @@ import 'express-session';
 
 declare module 'express-session' {
   interface SessionData {
-    lang?: string;
-    userId?: string | number;
+    userId?: number | string;
     isAdmin?: boolean;
     loginSuccess?: boolean;
+    lang?: string;
   }
 }
