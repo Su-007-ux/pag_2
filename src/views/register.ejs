@@ -2,7 +2,7 @@
 
 <div class="container d-flex justify-content-center align-items-center vh-100">
   <div class="card shadow p-4" style="max-width: 400px; width: 100%;">
-    <h3 class="text-center mb-4">Registro de administrador</h3>
+    <h3 class="text-center mb-4"><%= t('register_admin') || 'Registro de administrador' %></h3>
 
     <% if (typeof error !== 'undefined') { %>
       <div class="alert alert-danger"><%= error %></div>
@@ -10,18 +10,18 @@
 
     <form action="/register" method="POST">
       <div class="mb-3">
-        <label for="username" class="form-label">Usuario</label>
+        <label for="username" class="form-label"><%= t('username') || 'Usuario' %></label>
         <input type="text" class="form-control" name="username" id="username" required>
       </div>
       <div class="mb-3">
-        <label for="password" class="form-label">Contraseña</label>
+        <label for="password" class="form-label"><%= t('password') || 'Contraseña' %></label>
         <input type="password" class="form-control" name="password" id="password" required>
       </div>
-      <button type="submit" class="btn btn-success w-100">Registrar</button>
+      <button type="submit" class="btn btn-success w-100"><%= t('register') %></button>
     </form>
 
     <div class="text-center mt-3">
-      <a href="/login">¿Ya tienes cuenta? Inicia sesión</a>
+      <a href="/login"><%= t('already_account_login') || '¿Ya tienes cuenta? Inicia sesión' %></a>
     </div>
   </div>
 </div>

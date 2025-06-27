@@ -56,14 +56,20 @@
   <!-- Navbar principal -->
   <nav class="navbar navbar-expand-lg navbar-dark">
     <div class="container">
-      <a class="navbar-brand" href="#"><i class="fas fa-tools"></i> Service Tecno</a>
+      <a class="navbar-brand" href="#"><i class="fas fa-tools"></i> <%= t('title') %></a>
+      <form method="get" action="" class="ms-auto me-2">
+        <select name="lang" onchange="this.form.submit()" class="form-select form-select-sm d-inline w-auto">
+          <option value="es" <%= lang === 'es' ? 'selected' : '' %>>Español</option>
+          <option value="en" <%= lang === 'en' ? 'selected' : '' %>>English</option>
+        </select>
+      </form>
       <div class="ms-auto">
         <% if (typeof userId !== 'undefined') { %>
-          <a href="/dashboard" class="btn btn-outline-light me-2">Panel</a>
-          <a href="/logout" class="btn btn-danger">Cerrar sesión</a>
+          <a href="/dashboard" class="btn btn-outline-light me-2"><%= t('dashboard') %></a>
+          <a href="/logout" class="btn btn-danger"><%= t('logout') %></a>
         <% } else { %>
-          <a href="/login" class="btn btn-outline-light me-2">Iniciar sesión</a>
-          <a href="/register" class="btn btn-success">Registrarse</a>
+          <a href="/login" class="btn btn-outline-light me-2"><%= t('login') %></a>
+          <a href="/register" class="btn btn-success"><%= t('register') %></a>
         <% } %>
       </div>
     </div>
@@ -72,9 +78,9 @@
   <!-- Sección principal (Hero) -->
   <section class="hero">
     <div class="container">
-      <h1 class="display-4">Reparación Profesional de PCs y Laptops</h1>
-      <p class="lead">Diagnóstico gratuito y soluciones rápidas para tu equipo.</p>
-      <a href="#contacto" class="btn btn-custom btn-lg mt-3">Contáctanos</a>
+      <h1 class="display-4"><%= t('main_title') || 'Reparación Profesional de PCs y Laptops' %></h1>
+      <p class="lead"><%= t('main_subtitle') || 'Diagnóstico gratuito y soluciones rápidas para tu equipo.' %></p>
+      <a href="#contacto" class="btn btn-custom btn-lg mt-3"><%= t('contact_us') || 'Contáctanos' %></a>
     </div>
   </section>
 

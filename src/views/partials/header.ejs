@@ -12,3 +12,16 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#"><i class="fas fa-tools"></i> <%= t('title') %></a>
+      <form method="get" action="" class="ms-auto me-2">
+        <select name="lang" onchange="this.form.submit()" class="form-select form-select-sm d-inline w-auto">
+          <option value="es" <%= lang === 'es' ? 'selected' : '' %>>Español</option>
+          <option value="en" <%= lang === 'en' ? 'selected' : '' %>>English</option>
+        </select>
+      </form>
+    </div>
+  </nav>
+  <div class="container">
+    <!-- Contenido de la página -->

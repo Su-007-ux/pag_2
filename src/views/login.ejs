@@ -1,32 +1,32 @@
 <%- include('partials/header') %>
 <div class="container mt-5" style="max-width: 400px;">
-  <div class="card shadow">
-    <div class="card-body">
-      <h2 class="card-title text-center mb-4"><i class="fas fa-sign-in-alt"></i> Iniciar sesión</h2>
+<div class="container d-flex justify-content-center align-items-center vh-100">
+  <div class="card shadow p-4" style="max-width: 400px; width: 100%;">
+    <h3 class="text-center mb-4"><%= t('register_admin') || 'Registro de administrador' %></h3>sign-in-alt"></i> <%= t('login') %></h2>
       <% if (typeof error !== 'undefined') { %>
-        <div class="alert alert-danger"><%= error %></div>
-      <% } %>
-      <form action="/login" method="post" autocomplete="off">
+    <% if (typeof error !== 'undefined') { %>rror %></div>
+      <div class="alert alert-danger"><%= error %></div>
+    <% } %> action="/login" method="post" autocomplete="off">
         <div class="mb-3">
-          <label for="username" class="form-label">Usuario</label>
-          <input type="text" class="form-control" id="username" name="username" placeholder="Tu usuario" required>
-        </div>
-        <div class="mb-3">
-          <label for="password" class="form-label">Contraseña</label>
-          <input type="password" class="form-control" id="password" name="password" placeholder="Tu contraseña" required>
-        </div>
-        <button type="submit" class="btn btn-primary w-100">Entrar</button>
-      </form>
-      <div class="mt-3 text-center">
-        <a href="/register">¿No tienes cuenta? Regístrate</a>
+    <form action="/register" method="POST">-label"><%= t('username') || 'Usuario' %></label>
+      <div class="mb-3">ext" class="form-control" id="username" name="username" placeholder="<%= t('username') || 'Tu usuario' %>" required>
+        <label for="username" class="form-label"><%= t('username') || 'Usuario' %></label>
+        <input type="text" class="form-control" name="username" id="username" required>
+      </div>abel for="password" class="form-label"><%= t('password') || 'Contraseña' %></label>
+      <div class="mb-3">assword" class="form-control" id="password" name="password" placeholder="<%= t('password') || 'Tu contraseña' %>" required>
+        <label for="password" class="form-label"><%= t('password') || 'Contraseña' %></label>
+        <input type="password" class="form-control" name="password" id="password" required>
+      </div>>
+      <button type="submit" class="btn btn-success w-100"><%= t('register') %></button>
+    </form>href="/register"><%= t('no_account_register') || '¿No tienes cuenta? Regístrate' %></a>
       </div>
-      <hr>
-      <div class="text-center">
-        <a href="/auth/google" class="btn btn-danger w-100">
-          <i class="fab fa-google"></i> Iniciar sesión con Google
-        </a>
+    <div class="text-center mt-3">
+      <a href="/login"><%= t('already_account_login') || '¿Ya tienes cuenta? Inicia sesión' %></a>
+    </div> href="/auth/google" class="btn btn-danger w-100">
+  </div>  <i class="fab fa-google"></i> <%= t('login_with_google') || 'Iniciar sesión con Google' %>
+</div>  </a>
       </div>
-    </div>
+<%- include('partials/footer') %>
   </div>
 </div>
 <%- include('partials/footer') %>
