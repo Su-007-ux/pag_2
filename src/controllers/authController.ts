@@ -32,11 +32,13 @@ export const login = async (req: Request, res: Response) => {
     req.session.userId = user.id;
     req.session.isAdmin = user.isAdmin;
     req.session.loginSuccess = true;
-    if (user.isAdmin) {
-      return res.redirect('/dashboard');
-    } else {
-      return res.redirect('/');
-    }
+    req.session.save(() => {
+      if (user.isAdmin) {
+        return res.redirect('/dashboard');
+      } else {
+        return res.redirect('/');
+      }
+    });
   } else {
     res.render('login', { error: 'Credenciales incorrectas' });
   }

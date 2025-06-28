@@ -35,6 +35,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(cookieParser());
 app.use(i18nMiddleware);
+app.set('trust proxy', 1);
 
 // Configuración del motor de vistas EJS
 app.set('view engine', 'ejs');
