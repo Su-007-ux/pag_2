@@ -3,9 +3,19 @@ import bcrypt from 'bcrypt';
 import dbPromise from '../database/db';
 
 async function authenticateUser(username: string, password: string) {
-  // Simulación: usuario válido si username === "admin" y password === "1234"
+  // Admin hardcodeado
   if (username === 'admin' && password === '1234') {
     return { id: 1, username: 'admin', isAdmin: true };
+  }
+
+  // Buscar usuario en la base de datos
+  const db = await dbPromise;
+  const user = await db.get('SELECT * FROM users WHERE username = ?', [username]);
+  if (user && user.password_hash) {
+    const match = await bcrypt.compare(password, user.password_hash);
+    if (match) {
+      return { id: user.id, username: user.username, isAdmin: false };
+    }
   }
   return null;
 }
@@ -16,26 +26,19 @@ export const showLogin = (req: Request, res: Response) => {
 
 export const login = async (req: Request, res: Response) => {
   const { username, password } = req.body;
-  if (!username || !password) {
-    return res.render('login', { error: 'Todos los campos son obligatorios' });
-  }
-  try {
-    const user = await authenticateUser(username, password);
+  const user = await authenticateUser(username, password);
 
-    if (user) {
-      req.session.userId = user.id;
-      req.session.isAdmin = user.isAdmin;
-      req.session.loginSuccess = true;
-      if (user.isAdmin) {
-        return res.redirect('/dashboard');
-      } else {
-        return res.redirect('/');
-      }
+  if (user) {
+    req.session.userId = user.id;
+    req.session.isAdmin = user.isAdmin;
+    req.session.loginSuccess = true;
+    if (user.isAdmin) {
+      return res.redirect('/dashboard');
     } else {
-      return res.render('login', { error: 'Credenciales incorrectas' });
+      return res.redirect('/');
     }
-  } catch (err) {
-    return res.render('login', { error: 'Error en el servidor' });
+  } else {
+    res.render('login', { error: 'Credenciales incorrectas' });
   }
 };
 

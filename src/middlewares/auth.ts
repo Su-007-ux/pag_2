@@ -8,6 +8,7 @@ export function requireLogin(req: Request, res: Response, next: NextFunction) {
 }
 
 export function requireAdmin(req: Request, res: Response, next: NextFunction) {
+  console.log('Sesión actual:', req.session);
   if (req.session && req.session.userId && req.session.isAdmin) {
     return next();
   }
