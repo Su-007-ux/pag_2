@@ -11,14 +11,6 @@ import dashboardRoutes from './routes/dashboardRoutes';
 import cookieParser from 'cookie-parser';
 import { i18nMiddleware } from './middlewares/i18n';
 
-
-
-
-/**
- * Archivo principal del servidor Express.
- * Configura middlewares, rutas y motor de vistas para la aplicación.
- */
-
 const app = express();
 
 // Middleware para parsear datos de formularios (URL-encoded)

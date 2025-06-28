@@ -38,9 +38,9 @@ export const login = async (req: Request, res: Response) => {
 export const logout = (req: Request, res: Response) => {
   req.session.destroy((err) => {
     if (err) {
-      return res.status(500).json({ message: 'Error al cerrar sesión' });
+      return res.status(500).send('Error al cerrar sesión');
     }
-    res.status(200).json({ message: 'Sesión cerrada correctamente' });
+    res.redirect('/login'); // Redirige al login después de cerrar sesión
   });
 };
 
