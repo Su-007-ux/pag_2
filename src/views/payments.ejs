@@ -26,6 +26,7 @@
   </script>
 </head>
 <body class="container mt-5">
+  <%- include('partials/header') %>
   <h1 class="mb-4"><%= t('payments') %></h1>
   <div class="row mb-3">
     <div class="col">
@@ -56,11 +57,12 @@
           <td class="servicio"><%= pago.service %></td>
           <td><%= formatCurrency(pago.amount, pago.currency) %></td>
           <td class="fecha"><%= formatDate(pago.date) %></td>
-          <td class="estado"><%= t('successful') %></td>
+          <td class="estado"><%= t(pago.status) %></td>
         </tr>
       <% }) %>
     </tbody>
   </table>
   <a href="/dashboard" class="btn btn-secondary mt-4"><%= t('back_to_panel') %></a>
+  <%- include('partials/footer') %>
 </body>
 </html>

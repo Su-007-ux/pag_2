@@ -15,16 +15,16 @@
 </head>
 <body class="container mt-5">
   <h1 class="mb-4"><%= t('contacts') %></h1>
-  <input type="text" id="busqueda" placeholder="<%= t('search_by_name_email') || 'Buscar por nombre o email' %>" onkeyup="filtrarContactos()" class="form-control mb-4">
+  <input type="text" id="busqueda" placeholder="<%= t('search_by_name_email') %>" onkeyup="filtrarContactos()" class="form-control mb-4">
   <table class="table table-bordered" id="tablaContactos">
     <thead>
       <tr>
-        <th><%= t('name') || 'Nombre' %></th>
-        <th><%= t('email') || 'Email' %></th>
-        <th><%= t('message') || 'Mensaje' %></th>
+        <th><%= t('name') %></th>
+        <th><%= t('email') %></th>
+        <th><%= t('message') %></th>
         <th>IP</th>
         <th><%= t('date') %></th>
-        <th><%= t('country') || 'País' %></th>
+        <th><%= t('country') %></th>
       </tr>
     </thead>
     <tbody>
