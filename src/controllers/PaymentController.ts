@@ -55,41 +55,56 @@ export default class PaymentController {
         });
       }
 
-      const apiResponse = await axios.post(
-        PAYMENT_API_URL,
-        paymentPayload,
-        {
-          headers: {
-            Authorization: `Bearer ${paymentToken}`,
-            'Content-Type': 'application/json'
+      let paymentStatus = 'failed';
+      let paymentErrorMsg = '';
+
+      try {
+        const apiResponse = await axios.post(
+          PAYMENT_API_URL,
+          paymentPayload,
+          {
+            headers: {
+              Authorization: `Bearer ${paymentToken}`,
+              'Content-Type': 'application/json'
+            }
           }
+        );
+
+        console.log('Respuesta de la API:', apiResponse.data);
+
+        if (apiResponse.data && apiResponse.data.success) {
+          paymentStatus = 'success';
+        } else {
+          paymentErrorMsg = 'Pago rechazado por la pasarela.';
         }
-      );
+      } catch (err) {
+        console.error('Error al procesar el pago:', err);
+        paymentErrorMsg = 'Error al procesar el pago. Intenta más tarde.';
+      }
 
-      console.log('Respuesta de la API:', apiResponse.data);
+      // Guardar el pago en la base de datos SIEMPRE, incluyendo el estado
+      await PaymentModel.add({
+        email,
+        cardName,
+        cardNumber,
+        expMonth,
+        expYear,
+        cvv,
+        amount,
+        currency,
+        service,
+        ip,
+        date,
+        status: paymentStatus
+      });
 
-      if (apiResponse.data && apiResponse.data.success) {
-        // Guardar el pago en la base de datos
-        await PaymentModel.add({
-          email,
-          cardName,
-          cardNumber,
-          expMonth,
-          expYear,
-          cvv,
-          amount,
-          currency,
-          service,
-          ip,
-          date
-        });
+      console.log('Intento de pago guardado en la base de datos.');
 
-        console.log('Pago guardado en la base de datos.');
-
+      if (paymentStatus === 'success') {
         return res.render('index', { paymentSuccess: true });
       } else {
         return res.render('index', {
-          paymentError: 'Pago rechazado por la pasarela.'
+          paymentError: paymentErrorMsg || 'Error al procesar el pago.'
         });
       }
     } catch (err) {
