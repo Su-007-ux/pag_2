@@ -89,23 +89,26 @@
     <div class="container text-center">
       <h2 class="mb-4"><%= t('our_services') %></h2>
       <div class="row">
+        <% const softwareRepair = t('software_repair'); %>
+        <% const hardwareRepair = t('hardware_repair'); %>
+        <% const techSupport = t('tech_support'); %>
         <div class="col-md-4 mb-4">
           <i class="fas fa-laptop-code fa-2x"></i>
-          <h5><%= t('software_repair') %></h5>
+          <h5><%= softwareRepair %></h5>
           <p><%= t('software_repair_desc') %></p>
-          <button class="btn btn-primary" onclick="togglePaymentForm('<%= t(&quot;software_repair&quot;) %>')"><%= t("hire") %></button>
+          <button class="btn btn-primary" type="button" onclick="togglePaymentForm('<%= softwareRepair %>')"><%= t('hire') %></button>
         </div>
         <div class="col-md-4 mb-4">
           <i class="fas fa-tools fa-2x"></i>
-          <h5><%= t('hardware_repair') %></h5>
+          <h5><%= hardwareRepair %></h5>
           <p><%= t('hardware_repair_desc') %></p>
-          <button class="btn btn-primary" onclick="togglePaymentForm('<%= t(&quot;hardware_repair&quot;) %>')"><%= t("hire") %></button>
+          <button class="btn btn-primary" type="button" onclick="togglePaymentForm('<%= hardwareRepair %>')"><%= t('hire') %></button>
         </div>
         <div class="col-md-4 mb-4">
           <i class="fas fa-headset fa-2x"></i>
-          <h5><%= t('tech_support') %></h5>
+          <h5><%= techSupport %></h5>
           <p><%= t('tech_support_desc') %></p>
-          <button class="btn btn-primary" onclick="togglePaymentForm('<%= t(&quot;tech_support&quot;) %>')"><%= t("hire") %></button>
+          <button class="btn btn-primary" type="button" onclick="togglePaymentForm('<%= techSupport %>')"><%= t('hire') %></button>
         </div>
       </div>
     </div>
